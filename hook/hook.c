@@ -8,6 +8,9 @@
 #include <linux/moduleparam.h>
 #include <linux/unistd.h>
 #include <linux/kallsyms.h>
+#include <linux/fcntl.h>
+#include <linux/mm_types.h>
+#include <linux/slab.h>
 
 #include <asm/cacheflush.h>
 #include <asm/unistd.h>
@@ -20,17 +23,40 @@ void **system_call_table_addr;
 asmlinkage long (*open_syscall) (const char __user *, int, int);
 asmlinkage long (*write_syscall) (unsigned int, const char __user *, int);
 
+void get_process_name(void) {
+    char *pathname;
+    char *p;
+    struct mm_struct *mm = (void*) current->mm;
+    if (mm) {
+        down_read(&mm->mmap_sem);
+        if (mm->exe_file) {
+            pathname = (char*) kmalloc(PATH_MAX, GFP_ATOMIC);
+            if (pathname) {
+                p = d_path(&mm->exe_file->f_path, pathname, PATH_MAX);
+                /*Now you have the path name of exe in p*/
+            }
+        }
+        up_read(&mm->mmap_sem);
+    }
+
+    printk(KERN_INFO "Hook:    Process call: %s\n", p);
+    kfree(pathname);
+}
+
 /*hook*/
 asmlinkage long modified_open(const char __user * file, int flags, int mode) {
     printk(KERN_INFO "Hook: A file was opened\n");
     printk(KERN_INFO "Hook:    File: %s\n", file);
+    get_process_name();
     return open_syscall(file, flags, mode);
 }
 
 asmlinkage long modified_write(unsigned int df, const char __user * buffer, int count) {
     printk(KERN_INFO "Hook: A `write` system call was called\n");
     // printk(KERN_INFO "Hook:    Content: %s\n", buffer);
+    printk(KERN_INFO "Hook:    File descriptor: %u\n", df);
     printk(KERN_INFO "Hook:    Bytes writen: %d\n", count);
+    get_process_name();
     return write_syscall(df, buffer, count);
 }
 
