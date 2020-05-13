@@ -6,7 +6,7 @@ CSC10007 - Operating System Project #2
 
 ### Link GitHub
 
-Chương trình của nhóm có thể xem online tại GitHub tại [đây](https://github.com/mansblacks/CSC10007-Project2).
+Chương trình của nhóm có thể xem online tại GitHub tại [đây](https://github.com/npkhang99/CSC10007-Project2).
 
 ### Thành viên nhóm
 
