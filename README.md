@@ -42,7 +42,7 @@ $ make
 Sau khi module được biên dịch xong, bạn có thể thêm module vào hệ thống
 
 ```sh
-sudo insmod driver.ko
+$ sudo insmod driver.ko
 ```
 
 Sau khi module được thêm vào hệ thống, bạn có thể xem log kernel hệ thống bằng lệnh
@@ -87,7 +87,7 @@ $ make
 Sau khi hook được biên dịch xong, bạn có thể thêm hook vào hệ thống
 
 ```sh
-sudo insmod hook.ko
+$ sudo insmod hook.ko
 ```
 
 Lúc này, bạn có thể xem log kernel để bắt toàn bộ system call `open` và `write` được gọi bằng `dmesg`. Với những bản `dmesg` mới hơn, bạn có thể xem `dmesg` liên tục bằng cách gõ lệnh sau vào terminal
